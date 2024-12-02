@@ -31,3 +31,34 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+//Left menu switch logic
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.leftMenuOption');
+    const tabContents = document.querySelectorAll('.tab-content');
+  
+    // Initially show the "About" tab
+    showTab('about');
+  
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.dataset.tab;
+        showTab(tabId);
+      });
+    });
+  
+    function showTab(tabId) {
+      tabContents.forEach(content => {
+        content.classList.remove('active-tab');
+      });
+  
+      const selectedContent = document.getElementById(`${tabId}-content`);
+      selectedContent.classList.add('active-tab');
+
+      tabButtons.forEach(button => {
+        button.classList.remove('active-menu-tab');
+      });
+    
+      const selectedButton = document.querySelector(`.leftMenuOption[data-tab="${tabId}"]`);
+      selectedButton.classList.add('active-menu-tab');
+    }
+  });
