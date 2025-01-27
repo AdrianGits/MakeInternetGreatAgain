@@ -58,4 +58,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* Working Capybarago simulating userinput
+function simulateUserInput() {
+  const gameIDField = document.querySelector('input[placeholder="Enter your Game ID here"]');
+  const rewardsCodeField = document.querySelector('input[placeholder="Enter Rewards Code here"]');
+
+  if (gameIDField) {
+    gameIDField.value = '9168336';
+    gameIDField.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  if (rewardsCodeField) {
+    rewardsCodeField.value = 'test123';
+    rewardsCodeField.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+}
+// Execute the function
+simulateUserInput();
+
+  */
+
   
