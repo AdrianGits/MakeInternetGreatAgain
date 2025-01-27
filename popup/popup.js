@@ -1,14 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//   var godModeOnBtn = document.getElementById('godModeOn');
-
-//   godModeOnBtn.addEventListener('click', function() {
-//       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-//           chrome.tabs.sendMessage(tabs[0].id, {action: "activate"}, function(response) {
-//               console.log('Elements updated');
-//           });
-//       });
-//   });
-// });
 
 document.addEventListener('DOMContentLoaded', function() {
   var godModeOnBtn = document.getElementById('godModeOn');
@@ -37,12 +26,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabContents = document.querySelectorAll('.tab-content');
   
     // Initially show the "About" tab
-    showTab('about');
+    //showTab('about');
+    // Initially show the last saved tab, can remove in live version and uncomment above
+    const savedTab = localStorage.getItem('activeTab') || 'about';
+    showTab(savedTab);
   
     tabButtons.forEach(button => {
       button.addEventListener('click', () => {
         const tabId = button.dataset.tab;
         showTab(tabId);
+        //Remember the last tab, can remove in live version
+        localStorage.setItem('activeTab', tabId);
+
       });
     });
   
@@ -62,3 +57,5 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedButton.classList.add('active-menu-tab');
     }
   });
+
+  

@@ -1,42 +1,71 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Make Internet Great Again</title>
     <link rel="stylesheet" href="popup.css">
     <script src="popup.js"></script>
 </head>
+
 <body>
     <div class="extContainer">
         <div class="leftMenu">
             <a class="leftMenuOption active-menu-tab" data-tab="about">About</a>
             <a class="leftMenuOption" data-tab="dxc">DXC Portal</a>
             <a class="leftMenuOption" data-tab="dynamics">Dynamics 365</a>
+            <a class="leftMenuOption" data-tab="capybarago">Capybarago</a>
             <a class="leftMenuOption" data-tab="general">General Optimisation</a>
         </div>
-    
-        <div class="rightItems">
-            <!-- Show on all pages -->
-            <p class="headerText">Making the Internet Great Again - one feature at 
-                a time
-            </a>
 
-            <!-- About -->
+        <div class="rightItems">
+            <p class="headerText">Making the Internet Great Again - one feature at
+                a time
+                </a>
             <div class="tab-content active-tab" id="about-content">
                 <p>This extension was created by a man who has reached his wit's end. A man who can no longer
-                 idly sit by and watch as simplicity overrules complexity.</p>
+                    idly sit by and watch as simplicity overrules complexity.</p>
                 <p>It's time to take back control.</p>
                 <p><b>It's time to make the Internet great again.</b></p>
                 <p>- Adrian</p>
             </div>
-            <!-- DXC Content -->
             <div class="tab-content" id="dxc-content">
-                <button id="godModeOn">On</button>
-                <button id="godModeOff">Off</button>
+                <!-- <button id="godModeOn">On</button>
+                <button id="godModeOff">Off</button> -->
+                <div class="slider-container">
+                    <label class="switch">
+                        <input type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                    <span class="slider-text">TotalObjects Admin</span>
+                </div>
+                <div class="slider-container">
+                    <label class="switch">
+                        <input type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                    <span class="slider-text">Show Field DB Names</span>
+                </div>
+                <div class="slider-container">
+                    <label class="switch">
+                        <input type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                    <span class="slider-text">Some other function</span>
+                </div>
             </div>
 
             <!-- D365 Content -->
             <div class="tab-content" id="dynamics-content">
 
+            </div>
+
+            <!-- Capybarago Content -->
+            <div class="tab-content" id="capybarago-content">
+                <div class="iframe-wrapper">
+                    <div class="iframe-viewport">
+                        <iframe src="https://gift.capybarago.io/"></iframe>
+                    </div>
+                </div>                
             </div>
 
             <!-- General Content -->
@@ -46,4 +75,5 @@
         </div>
     </div>
 </body>
+
 </html>
