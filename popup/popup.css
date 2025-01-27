@@ -42,7 +42,7 @@ html {
 
 .rightItems {
     width: 75%;
-    background-color: green;
+    background-image: url(/img/rightsidebg.png);
     padding: 8px;
 }
 
