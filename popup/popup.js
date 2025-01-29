@@ -1,11 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
   var toggleTotalObjectsAdmin = document.getElementById('toggleTotalObjectsAdmin');
+  var toggleAutofillCep = document.getElementById('toggleAutofillCep');
 
-  // Retrieve the stored state and set the checkbox accordingly
-  chrome.storage.sync.get('totalObjectsAdminState', function(data) {
+  // Retrieve the stored state and set the checkboxes accordingly
+  chrome.storage.sync.get(['totalObjectsAdminState', 'autofillCepState'], function(data) {
       if (data.totalObjectsAdminState) {
           toggleTotalObjectsAdmin.checked = true;
+      } else {
+          toggleTotalObjectsAdmin.checked = false;
       }
+
+      if (data.autofillCepState) {
+          toggleAutofillCep.checked = true;
+      } else {
+          toggleAutofillCep.checked = false;
+      }
+
+      console.log('DOMContentLoaded: totalObjectsAdminState:', data.totalObjectsAdminState);
+      console.log('DOMContentLoaded: autofillCepState:', data.autofillCepState);
   });
 
   toggleTotalObjectsAdmin.addEventListener('change', function() {
@@ -22,6 +34,20 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 
+  toggleAutofillCep.addEventListener('change', function() {
+      if (toggleAutofillCep.checked) {
+          chrome.storage.sync.set({autofillCepState: true}, function() {
+              console.log('Autofill CEP state saved as ON');
+              activateAutofillCep();
+          });
+      } else {
+          chrome.storage.sync.set({autofillCepState: false}, function() {
+              console.log('Autofill CEP state saved as OFF');
+              deactivateAutofillCep();
+          });
+      }
+  });
+
   function activateTotalObjectsAdmin() {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {action: "activate"}, function(response) {
@@ -34,6 +60,22 @@ document.addEventListener('DOMContentLoaded', function() {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {action: "deactivate"}, function(response) {
               console.log('TotalObjects Admin deactivated');
+          });
+      });
+  }
+
+  function activateAutofillCep() {
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {action: "activateAutofillCep"}, function(response) {
+              console.log('Autofill CEP activated');
+          });
+      });
+  }
+
+  function deactivateAutofillCep() {
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {action: "deactivateAutofillCep"}, function(response) {
+              console.log('Autofill CEP deactivated');
           });
       });
   }
