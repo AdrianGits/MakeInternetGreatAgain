@@ -1,24 +1,48 @@
-
 document.addEventListener('DOMContentLoaded', function() {
-  var godModeOnBtn = document.getElementById('godModeOn');
-  var godModeOffBtn = document.getElementById('godModeOff');
+  var toggleTotalObjectsAdmin = document.getElementById('toggleTotalObjectsAdmin');
 
-  godModeOnBtn.addEventListener('click', function() {
+  // Retrieve the stored state and set the checkbox accordingly
+  chrome.storage.sync.get('totalObjectsAdminState', function(data) {
+      if (data.totalObjectsAdminState) {
+          toggleTotalObjectsAdmin.checked = true;
+      }
+  });
+
+  toggleTotalObjectsAdmin.addEventListener('change', function() {
+      if (toggleTotalObjectsAdmin.checked) {
+          chrome.storage.sync.set({totalObjectsAdminState: true}, function() {
+              console.log('TotalObjects Admin state saved as ON');
+              activateTotalObjectsAdmin();
+          });
+      } else {
+          chrome.storage.sync.set({totalObjectsAdminState: false}, function() {
+              console.log('TotalObjects Admin state saved as OFF');
+              deactivateTotalObjectsAdmin();
+          });
+      }
+  });
+
+  function activateTotalObjectsAdmin() {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {action: "activate"}, function(response) {
-              console.log('Elements updated');
+              console.log('TotalObjects Admin activated');
           });
       });
-  });
+  }
 
-  godModeOffBtn.addEventListener('click', function() {
+  function deactivateTotalObjectsAdmin() {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {action: "deactivate"}, function(response) {
-              console.log('Elements reverted');
+              console.log('TotalObjects Admin deactivated');
           });
       });
-  });
+  }
 });
+
+
+
+
+
 
 //Left menu switch logic
 document.addEventListener('DOMContentLoaded', () => {

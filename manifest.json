@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "XII GODMODE",
+    "name": "Make the Internet Great Again",
     "version": "1.0.0",
-    "description": "Test app",
+    "description": "Description to be changed",
     "permissions": ["activeTab", "storage"],
     "background": {
         "service_worker": "background.js"

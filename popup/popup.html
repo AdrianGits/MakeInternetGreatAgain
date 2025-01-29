@@ -29,11 +29,9 @@
                 <p>- Adrian</p>
             </div>
             <div class="tab-content" id="dxc-content">
-                <!-- <button id="godModeOn">On</button>
-                <button id="godModeOff">Off</button> -->
                 <div class="slider-container">
                     <label class="switch">
-                        <input type="checkbox" />
+                        <input type="checkbox" id="toggleTotalObjectsAdmin"/>
                         <span class="slider"></span>
                     </label>
                     <span class="slider-text">TotalObjects Admin</span>
@@ -43,15 +41,31 @@
                         <input type="checkbox" />
                         <span class="slider"></span>
                     </label>
-                    <span class="slider-text">Show Field DB Names</span>
+                    <span class="slider-text">Replace field names with backend names</span>
                 </div>
                 <div class="slider-container">
                     <label class="switch">
                         <input type="checkbox" />
                         <span class="slider"></span>
                     </label>
-                    <span class="slider-text">Some other function</span>
+                    <span class="slider-text">Bypass auto logout timer/session token refresh - WIP</span>
                 </div>
+                <div class="slider-container">
+                    <label class="switch">
+                        <input type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                    <span class="slider-text">Autofill CEP product fields (alpha)</span>
+                    <button class="option-btn">Configure fields</button>
+                </div>
+                <!-- <div class="slider-container">
+                    <label class="switch">
+                        <input type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                    <span class="slider-text">Autofill ENT product fields - WIP</span>
+                    <button class="option-btn">Configure fields</button>
+                </div> -->
             </div>
 
             <!-- D365 Content -->
