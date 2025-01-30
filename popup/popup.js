@@ -81,11 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-
-
-
-
-
 //Left menu switch logic
 document.addEventListener('DOMContentLoaded', () => {
     const tabButtons = document.querySelectorAll('.leftMenuOption');
@@ -123,6 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedButton.classList.add('active-menu-tab');
     }
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = document.getElementById('menu-toggle');
+    const leftMenu = document.querySelector('.leftMenu');
+    const rightItems = document.querySelector('.rightItems');
+
+    menuToggle.addEventListener('click', () => {
+        leftMenu.classList.toggle('collapsed');
+        rightItems.classList.toggle('expanded');
+    });
+});
+
 
   /* Working Capybarago simulating userinput
 function simulateUserInput() {

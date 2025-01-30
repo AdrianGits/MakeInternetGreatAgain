@@ -6,38 +6,96 @@ html {
     font-family: "Gudea", sans-serif;
     font-weight: 400;
     font-style: normal;
+    background: linear-gradient(to right, #d3d3d3, #a9a9a9, #808080); 
     /* max: 800px */
 }
 
 .extContainer {
     display: flex;
     height: 585px;
+    position: relative;
 }
 
+.versionContainer {
+    position: absolute;
+    right: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.versionTxt {
+    text-align: right;
+    font-size: 0.7rem;
+}
+
+
 .leftMenu {
-    display: block;
-    background-color: rgb(110, 110, 110);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(36, 40, 50, 1);
+    background-image: linear-gradient(
+        139deg,
+        rgba(36, 40, 50, 1) 0%,
+        rgba(36, 40, 50, 1) 0%,
+        rgba(37, 28, 40, 1) 100%
+    );
     width: 25%;
     height: 100%;
     text-align: center;
     font-family: "Lato", serif;
     font-weight: 700;
     font-style: normal;
+    gap: 10px;
+    transition: width 0.3s ease; /* Add this line */
 }
+
+.leftMenu.collapsed .leftMenuOption {
+    opacity: 0; /* Hide text */
+    pointer-events: none; /* Prevent interaction */
+    transition: opacity 0.3s ease; /* Smooth transition */
+}
+
+.leftMenu.collapsed {
+    width: 0px; /* Adjust this value as needed */
+}
+
+
 
 .leftMenuOption {
+    opacity: 1;
+    transition: opacity 0.3s ease;
     display: flex;
     font-size: 24px;
-    background-color: #eeeeee;
-    /* margin: 5px 0px 5px 0px; */
-    /* border-radius: 5px; */
-    padding: 5px 5px 5px 5px;
+    background-color: rgba(36, 40, 50, 1);
+    padding: 4px 7px;
     justify-content: center;
     cursor: pointer;
+    align-items: center;
+    color: #b1b1b1;
+    transition: all 0.3s ease-out;
+    border-radius: 6px;
+    gap: 10px;
 }
 
+.leftMenuOption:hover {
+    background-color: rgba(36, 40, 50, 1);
+    color: #ffffff;
+    transform: translate(1px, -1px);
+}
+
+.leftMenuOption:active {
+    transform: scale(0.99);
+}
+
+
 .leftMenuOption.active-menu-tab {
-    background-color: rgb(121, 121, 121);
+    background-color: rgb(172, 172, 172);
+    color: white;
+}
+
+.leftMenuOption:first-of-type {
+    margin-top: 4rem;
 }
 
 .rightItems {
@@ -45,6 +103,7 @@ html {
     background-image: url(/img/rightmenubg.jpg);
     background-size: 100%;
     padding: 8px;
+    transition: width 0.3s ease;
 }
 
 .headerText {
