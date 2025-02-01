@@ -14,6 +14,22 @@ html {
     display: flex;
     height: 585px;
     position: relative;
+    overflow: hidden;
+}
+
+.bgContainer {
+    background-image: url(/img/rightmenubg.jpg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center -1.75rem;
+    height: 100%; /* Ensure the bgContainer takes up the full height of extContainer */
+    width: 100%; /* Ensure the bgContainer takes up the full width of extContainer */
+    position: absolute; /* Position it absolutely to sit behind other content */
+    top: 0;
+    left: 0;
+    z-index: -1; /* Ensure it is behind the other content */
+    padding-top: 3rem;
+    padding-left: 3rem;
 }
 
 .versionContainer {
@@ -33,12 +49,11 @@ html {
 .leftMenu {
     display: flex;
     flex-direction: column;
-    background-color: rgba(36, 40, 50, 1);
     background-image: linear-gradient(
         139deg,
-        rgba(36, 40, 50, 1) 0%,
-        rgba(36, 40, 50, 1) 0%,
-        rgba(37, 28, 40, 1) 100%
+        rgba(20, 24, 27) 0%,
+        rgba(20, 24, 27) 0%,
+        rgba(21, 28, 40, 1) 100%
     );
     width: 25%;
     height: 100%;
@@ -59,8 +74,6 @@ html {
 .leftMenu.collapsed {
     width: 0px; /* Adjust this value as needed */
 }
-
-
 
 .leftMenuOption {
     opacity: 1;
@@ -100,8 +113,6 @@ html {
 
 .rightItems {
     width: 75%;
-    background-image: url(/img/rightmenubg.jpg);
-    background-size: 100%;
     padding: 8px;
     transition: width 0.3s ease;
 }
@@ -195,7 +206,7 @@ button {
 
 /* Text next to slider */
 .slider-text {
-    margin-left: 10px; /* Adjust spacing as needed */
+    margin-left: 10px;
 }
 
 /* Wrapper for the iframe */
@@ -236,3 +247,145 @@ button {
     align-items: center;
     justify-content: center;
 }
+
+.versionLog {
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.versionSpan {
+    line-height: 2;
+    display: block;
+}
+
+.versionLogContainer {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.versionLogContainer::-webkit-scrollbar, .codesContainer::-webkit-scrollbar {
+    width: 12px;
+}
+
+.versionLogContainer::-webkit-scrollbar-track, .codesContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.versionLogContainer::-webkit-scrollbar-thumb, .codesContainer::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+}
+
+.versionLogContainer::-webkit-scrollbar-thumb:hover, .codesContainer::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Tooltip */
+
+/* Tooltip container */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 0.75rem;
+  }
+  
+  /* Icon styling */
+/* Icon styling */
+.icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: inline-flex; /* Changed from 'flex' to 'inline-flex' */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    vertical-align: middle; /* Added to align with text */
+  }
+  
+  
+  /* SVG Animation: Rotate and scale effect */
+  .icon svg {
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .icon:hover svg {
+    transform: rotate(360deg) scale(1.2);
+  }
+  
+  /* Tooltip styling */
+  .tooltip {
+    font-size: 0.85rem;
+    visibility: hidden;
+    width: 200px;
+    background-image: linear-gradient(
+        139deg,
+        rgba(20, 24, 27) 0%,
+        rgba(20, 24, 27) 0%,
+        rgba(21, 28, 40, 1) 100%
+    );
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 0.2rem;
+    position: absolute;
+    bottom: 125%; /* Position above the icon */
+    left: 50%;
+    margin-left: -6.5rem; /* Center the tooltip */
+    opacity: 0;
+    transition:
+      opacity 0.5s,
+      transform 0.5s;
+    transform: translateY(10px);
+  }
+  
+  /* Tooltip Arrow */
+  .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+  
+  /* Show tooltip on hover */
+  .tooltip-container:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-30px);
+    }
+    60% {
+      transform: translateY(-15px);
+    }
+  }
+  
+  .tooltip-container:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    animation: bounce 0.6s ease;
+  }
+
+  .codesContainer {
+    height: 4rem;          /* Adjust the height as needed */
+    overflow-y: auto;       /* Add vertical scroll if content overflows */
+    border: 1px solid #ccc; /* Optional: Add a border for visual clarity */
+    box-sizing: border-box; /* Ensure padding and border are included in the total height */    
+  }
+  

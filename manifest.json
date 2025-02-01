@@ -3,14 +3,21 @@
     "name": "Make the Internet Great Again",
     "version": "1.0.0",
     "description": "Description to be changed",
-    "permissions": ["activeTab", "storage"],
+    "permissions": ["activeTab", "storage", "webNavigation", "alarms", "https://www.escapistmagazine.com/*"],
+    "host_permissions": [
+        "https://www.escapistmagazine.com/*"
+      ],
     "background": {
         "service_worker": "background.js"
     },
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["content_scripts/content.js"]
+            "js": ["content_scripts/main_content.js"]
+        },
+        {
+            "matches": ["https://touat.totalobjects.com.au/*", "https://www.frontend.emergenceinsurance.com.au/*"],
+            "js": ["content_scripts/dxc_content.js"]
         }
     ],
     "action": {

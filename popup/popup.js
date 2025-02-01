@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   var toggleTotalObjectsAdmin = document.getElementById('toggleTotalObjectsAdmin');
   var toggleAutofillCep = document.getElementById('toggleAutofillCep');
+  var toggleClearCache = document.getElementById('toggleClearCache');
 
   // Retrieve the stored state and set the checkboxes accordingly
-  chrome.storage.sync.get(['totalObjectsAdminState', 'autofillCepState'], function(data) {
+  chrome.storage.sync.get(['totalObjectsAdminState', 'autofillCepState', 'clearCacheState'], function(data) {
       if (data.totalObjectsAdminState) {
           toggleTotalObjectsAdmin.checked = true;
       } else {
@@ -15,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
           toggleAutofillCep.checked = false;
       }
+      if (data.clearCacheState) {
+        toggleClearCache.checked = true;
+        } else {
+        toggleClearCache.checked = false;
+        }
 
       console.log('DOMContentLoaded: totalObjectsAdminState:', data.totalObjectsAdminState);
       console.log('DOMContentLoaded: autofillCepState:', data.autofillCepState);
@@ -48,6 +54,20 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 
+  toggleClearCache.addEventListener('change', function() {
+    if (toggleClearCache.checked) {
+        chrome.storage.sync.set({clearCacheState: true}, function() {
+            console.log('Clear Cache state saved as ON');
+            activateClearCache();
+        });
+    } else {
+        chrome.storage.sync.set({clearCacheState: false}, function() {
+            console.log('Clear Cache state saved as OFF');
+            deactivateClearCache();
+        });
+    }
+});
+
   function activateTotalObjectsAdmin() {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {action: "activate"}, function(response) {
@@ -79,6 +99,15 @@ document.addEventListener('DOMContentLoaded', function() {
           });
       });
   }
+
+  function activateClearCache() {
+    chrome.runtime.sendMessage({action: "activateClearCache"});
+}
+
+function deactivateClearCache() {
+    chrome.runtime.sendMessage({action: "deactivateClearCache"});
+}
+
 });
 
 //Left menu switch logic
@@ -119,16 +148,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const menuToggle = document.getElementById('menu-toggle');
-    const leftMenu = document.querySelector('.leftMenu');
-    const rightItems = document.querySelector('.rightItems');
 
-    menuToggle.addEventListener('click', () => {
-        leftMenu.classList.toggle('collapsed');
-        rightItems.classList.toggle('expanded');
+document.addEventListener('DOMContentLoaded', () => {
+    chrome.storage.local.get('capybaraCodes', (data) => {
+      const codesList = data.capybaraCodes || [];
+      const codesTable = document.getElementById('codesTable');
+      if (codesList.length > 0) {
+        codesList.forEach((codeObj) => {
+          const codeElement = document.createElement('div');
+          codeElement.innerHTML = `<strong>${codeObj.code}</strong>: ${codeObj.reward}`;
+          codesTable.appendChild(codeElement);
+        });
+      } else {
+        codesTable.textContent = 'No codes available at the moment.';
+      }
     });
+  });
+
+  // Manual fetch latest codes button logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const fetchCodesBtn = document.getElementById('fetchCodesBtn');
+    const codesTable = document.getElementById('codesTable');
+
+    fetchCodesBtn.addEventListener('click', () => {
+        fetchLatestCodes();
+    });
+
+    function fetchLatestCodes() {
+        // Display a loading message
+        codesTable.textContent = 'Fetching latest codes...';
+
+        // Fetch the HTML content from the website
+        fetch('https://www.escapistmagazine.com/capybara-go-codes/')
+            .then((response) => response.text())
+            .then((htmlContent) => {
+                const codesList = extractCodes(htmlContent);
+                displayCodes(codesList);
+            })
+            .catch((error) => {
+                console.error('Error fetching codes:', error);
+                codesTable.textContent = 'Failed to fetch codes.';
+            });
+    }
+
+    function extractCodes(htmlContent) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+        const listItems = doc.querySelectorAll('ul.wp-block-list > li');
+        const codes = [];
+        listItems.forEach((item) => {
+            const codeElement = item.querySelector('strong');
+            const code = codeElement ? codeElement.textContent.trim() : null;
+            const rewardTextMatch = item.innerText.match(/:\s*(.*)/);
+            const reward = rewardTextMatch ? rewardTextMatch[1].trim() : null;
+            if (code || reward) {
+                codes.push({ code, reward });
+            }
+        });
+        return codes;
+    }
+
+    function displayCodes(codesList) {
+        // Clear the container
+        codesTable.innerHTML = '';
+
+        if (codesList.length > 0) {
+            codesList.forEach((codeObj) => {
+                const codeElement = document.createElement('div');
+                codeElement.classList.add('code-item');
+                codeElement.innerHTML = `<strong>${codeObj.code}</strong>: ${codeObj.reward}`;
+                codesTable.appendChild(codeElement);
+            });
+        } else {
+            codesTable.textContent = 'No codes available at the moment.';
+        }
+    }
 });
+
+  
 
 
   /* Working Capybarago simulating userinput
