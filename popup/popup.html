@@ -109,13 +109,16 @@
                         <iframe src="https://gift.capybarago.io/"></iframe>
                     </div>
                 </div>
-                <label for="capyid">Enter your Capy ID:</label>
-                <input type="text" id="capyid">
+                <div class="capyInputContainer">
+                    <label for="capyid" id="capyidLabel">Enter your Capy ID:</label>
+                    <input type="text" id="capyidInput" name="capyidInput" placeholder="Capy ID" />
+                </div>
                 <p>Codes Table:</p>
                 <div class="codesContainer">
                     <div id="codesTable"></div>
                 </div>
                 <button class="option-btn" id="fetchCodesBtn">Fetch latest codes</button>
+                <button class="option-btn" id="autofillButton">Fill in fields</button>
             </div>
 
             <!-- General Content -->

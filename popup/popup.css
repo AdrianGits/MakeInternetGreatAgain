@@ -388,4 +388,14 @@ button {
     border: 1px solid #ccc; /* Optional: Add a border for visual clarity */
     box-sizing: border-box; /* Ensure padding and border are included in the total height */    
   }
+
+  .capyInputContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #capyidLabel {
+    margin-right: 0.5rem;
+  }
   

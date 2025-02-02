@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             element.style.display = 'none';  // Add display: none
         });
 
-        // Remove warning/timeout expiry elements
+        // Remove warning/timeout expiry elements from blocking the screen
         ['expirySessionWarningLock', 'expirySessionWarning'].forEach(function(id) {
             var element = document.getElementById(id);
             if (element) {

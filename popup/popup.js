@@ -2,6 +2,147 @@ document.addEventListener('DOMContentLoaded', function() {
   var toggleTotalObjectsAdmin = document.getElementById('toggleTotalObjectsAdmin');
   var toggleAutofillCep = document.getElementById('toggleAutofillCep');
   var toggleClearCache = document.getElementById('toggleClearCache');
+  const tabButtons = document.querySelectorAll('.leftMenuOption');
+  const tabContents = document.querySelectorAll('.tab-content');
+  const fetchCodesBtn = document.getElementById('fetchCodesBtn');
+  const codesTable = document.getElementById('codesTable');
+  const capyidInput = document.getElementById('capyidInput');
+  const iframe = document.querySelector('iframe');
+  const autofillButton = document.getElementById('autofillButton');
+
+  iframe.addEventListener('load', function() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      chrome.webNavigation.getAllFrames({ tabId: tabs[0].id }, function(frames) {
+        frames.forEach(function(frame) {
+          if (frame.url.includes('https://gift.capybarago.io/')) {
+            chrome.scripting.executeScript(
+              {
+                target: { tabId: tabs[0].id, frameIds: [frame.frameId] },
+                files: ['content_scripts/iframe_content.js']
+              },
+              () => {
+                console.log('Content script injected into iframe');
+              }
+            );
+
+            autofillButton.addEventListener('click', function() {
+              const capyidValue = capyidInput.value.trim();
+              chrome.tabs.sendMessage(
+                tabs[0].id,
+                { action: 'autofillFields', capyid: capyidValue },
+                { frameId: frame.frameId }
+              );
+            });
+          }
+        });
+      });
+    });
+  });
+
+
+
+  //Left menu switch logic
+  // Initially show the "About" tab
+  //showTab('about');
+  // Initially show the last saved tab, can remove in live version and uncomment above
+  const savedTab = localStorage.getItem('activeTab') || 'about';
+  showTab(savedTab);
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tabId = button.dataset.tab;
+      showTab(tabId);
+      //Remember the last tab, can remove in live version
+      localStorage.setItem('activeTab', tabId);
+
+    });
+  });
+
+  function showTab(tabId) {
+    tabContents.forEach(content => {
+      content.classList.remove('active-tab');
+    });
+
+    const selectedContent = document.getElementById(`${tabId}-content`);
+    selectedContent.classList.add('active-tab');
+
+    tabButtons.forEach(button => {
+      button.classList.remove('active-menu-tab');
+    });
+  
+    const selectedButton = document.querySelector(`.leftMenuOption[data-tab="${tabId}"]`);
+    selectedButton.classList.add('active-menu-tab');
+  }
+
+  // Retrieve and combine capy codes
+  chrome.storage.local.get('capybaraCodes', (data) => {
+    const codesList = data.capybaraCodes || [];
+    const codesTable = document.getElementById('codesTable');
+    if (codesList.length > 0) {
+      codesList.forEach((codeObj) => {
+        const codeElement = document.createElement('div');
+        codeElement.innerHTML = `<strong>${codeObj.code}</strong>: ${codeObj.reward}`;
+        codesTable.appendChild(codeElement);
+      });
+    } else {
+      codesTable.textContent = 'No codes available at the moment.';
+    }
+  });
+
+  fetchCodesBtn.addEventListener('click', () => {
+    fetchLatestCodes();
+});
+
+// Manual fetch latest codes logic
+function fetchLatestCodes() {
+    // Display a loading message
+    codesTable.textContent = 'Fetching latest codes...';
+
+    // Fetch the HTML content from the website
+    fetch('https://www.escapistmagazine.com/capybara-go-codes/')
+        .then((response) => response.text())
+        .then((htmlContent) => {
+            const codesList = extractCodes(htmlContent);
+            displayCodes(codesList);
+        })
+        .catch((error) => {
+            console.error('Error fetching codes:', error);
+            codesTable.textContent = 'Failed to fetch codes.';
+        });
+}
+
+function extractCodes(htmlContent) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, 'text/html');
+    const listItems = doc.querySelectorAll('ul.wp-block-list > li');
+    const codes = [];
+    listItems.forEach((item) => {
+        const codeElement = item.querySelector('strong');
+        const code = codeElement ? codeElement.textContent.trim() : null;
+        const rewardTextMatch = item.innerText.match(/:\s*(.*)/);
+        const reward = rewardTextMatch ? rewardTextMatch[1].trim() : null;
+        if (code || reward) {
+            codes.push({ code, reward });
+        }
+    });
+    return codes;
+}
+
+function displayCodes(codesList) {
+    // Clear the container
+    codesTable.innerHTML = '';
+
+    if (codesList.length > 0) {
+        codesList.forEach((codeObj) => {
+            const codeElement = document.createElement('div');
+            codeElement.classList.add('code-item');
+            codeElement.innerHTML = `<strong>${codeObj.code}</strong>: ${codeObj.reward}`;
+            codesTable.appendChild(codeElement);
+        });
+    } else {
+        codesTable.textContent = 'No codes available at the moment.';
+    }
+}
 
   // Retrieve the stored state and set the checkboxes accordingly
   chrome.storage.sync.get(['totalObjectsAdminState', 'autofillCepState', 'clearCacheState'], function(data) {
@@ -24,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       console.log('DOMContentLoaded: totalObjectsAdminState:', data.totalObjectsAdminState);
       console.log('DOMContentLoaded: autofillCepState:', data.autofillCepState);
+      console.log('DOMContentLoaded: toggleClearCache:', data.toggleClearCache);
   });
 
   toggleTotalObjectsAdmin.addEventListener('change', function() {
@@ -108,127 +250,24 @@ function deactivateClearCache() {
     chrome.runtime.sendMessage({action: "deactivateClearCache"});
 }
 
-});
-
-//Left menu switch logic
-document.addEventListener('DOMContentLoaded', () => {
-    const tabButtons = document.querySelectorAll('.leftMenuOption');
-    const tabContents = document.querySelectorAll('.tab-content');
-  
-    // Initially show the "About" tab
-    //showTab('about');
-    // Initially show the last saved tab, can remove in live version and uncomment above
-    const savedTab = localStorage.getItem('activeTab') || 'about';
-    showTab(savedTab);
-  
-    tabButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const tabId = button.dataset.tab;
-        showTab(tabId);
-        //Remember the last tab, can remove in live version
-        localStorage.setItem('activeTab', tabId);
-
-      });
-    });
-  
-    function showTab(tabId) {
-      tabContents.forEach(content => {
-        content.classList.remove('active-tab');
-      });
-  
-      const selectedContent = document.getElementById(`${tabId}-content`);
-      selectedContent.classList.add('active-tab');
-
-      tabButtons.forEach(button => {
-        button.classList.remove('active-menu-tab');
-      });
-    
-      const selectedButton = document.querySelector(`.leftMenuOption[data-tab="${tabId}"]`);
-      selectedButton.classList.add('active-menu-tab');
+  // Retrieve and display stored capyid
+  chrome.storage.local.get('capyID', (data) => {
+    if (data.capyID) {
+      capyidInput.value = data.capyID;
     }
   });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-    chrome.storage.local.get('capybaraCodes', (data) => {
-      const codesList = data.capybaraCodes || [];
-      const codesTable = document.getElementById('codesTable');
-      if (codesList.length > 0) {
-        codesList.forEach((codeObj) => {
-          const codeElement = document.createElement('div');
-          codeElement.innerHTML = `<strong>${codeObj.code}</strong>: ${codeObj.reward}`;
-          codesTable.appendChild(codeElement);
-        });
-      } else {
-        codesTable.textContent = 'No codes available at the moment.';
-      }
+  // Save the Capy ID whenever the user changes it
+  capyidInput.addEventListener('input', () => {
+    const capyIDValue = capyidInput.value.trim();
+    chrome.storage.local.set({ capyID: capyIDValue }, () => {
+      console.log('Capy ID saved:', capyIDValue);
     });
   });
 
-  // Manual fetch latest codes button logic
-  document.addEventListener('DOMContentLoaded', () => {
-    const fetchCodesBtn = document.getElementById('fetchCodesBtn');
-    const codesTable = document.getElementById('codesTable');
-
-    fetchCodesBtn.addEventListener('click', () => {
-        fetchLatestCodes();
-    });
-
-    function fetchLatestCodes() {
-        // Display a loading message
-        codesTable.textContent = 'Fetching latest codes...';
-
-        // Fetch the HTML content from the website
-        fetch('https://www.escapistmagazine.com/capybara-go-codes/')
-            .then((response) => response.text())
-            .then((htmlContent) => {
-                const codesList = extractCodes(htmlContent);
-                displayCodes(codesList);
-            })
-            .catch((error) => {
-                console.error('Error fetching codes:', error);
-                codesTable.textContent = 'Failed to fetch codes.';
-            });
-    }
-
-    function extractCodes(htmlContent) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlContent, 'text/html');
-        const listItems = doc.querySelectorAll('ul.wp-block-list > li');
-        const codes = [];
-        listItems.forEach((item) => {
-            const codeElement = item.querySelector('strong');
-            const code = codeElement ? codeElement.textContent.trim() : null;
-            const rewardTextMatch = item.innerText.match(/:\s*(.*)/);
-            const reward = rewardTextMatch ? rewardTextMatch[1].trim() : null;
-            if (code || reward) {
-                codes.push({ code, reward });
-            }
-        });
-        return codes;
-    }
-
-    function displayCodes(codesList) {
-        // Clear the container
-        codesTable.innerHTML = '';
-
-        if (codesList.length > 0) {
-            codesList.forEach((codeObj) => {
-                const codeElement = document.createElement('div');
-                codeElement.classList.add('code-item');
-                codeElement.innerHTML = `<strong>${codeObj.code}</strong>: ${codeObj.reward}`;
-                codesTable.appendChild(codeElement);
-            });
-        } else {
-            codesTable.textContent = 'No codes available at the moment.';
-        }
-    }
 });
 
-  
-
-
-  /* Working Capybarago simulating userinput
+//Working Capybarago simulating userinput (in browser console only, CORs needs testing)
 function simulateUserInput() {
   const gameIDField = document.querySelector('input[placeholder="Enter your Game ID here"]');
   const rewardsCodeField = document.querySelector('input[placeholder="Enter Rewards Code here"]');
@@ -245,6 +284,6 @@ function simulateUserInput() {
 // Execute the function
 simulateUserInput();
 
-  */
+
 
   

@@ -16,7 +16,7 @@ chrome.webNavigation.onCommitted.addListener(function (details) {
                         console.log('User-initiated reload detected for tabId:', details.tabId);
                         reloadingTabs.add(details.tabId);
                         chrome.tabs.reload(details.tabId, { bypassCache: true }, function () {
-                            console.log("Cache cleared and tab reloaded");
+                        console.log("Cache cleared and tab reloaded");
                         });
                     }
                 }
