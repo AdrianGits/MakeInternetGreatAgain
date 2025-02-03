@@ -20,7 +20,7 @@
   // Call autofillFields when the content script runs
   autofillFields();
 
-  // Optionally, listen for storage changes to update the fields dynamically
+  // Listen for storage changes to update the fields dynamically
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local' && changes.capyID) {
       autofillFields();

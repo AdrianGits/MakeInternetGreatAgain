@@ -107,7 +107,7 @@ function fetchLatestCodes() {
         })
         .catch((error) => {
             console.error('Error fetching codes:', error);
-            codesTable.textContent = 'Failed to fetch codes.';
+            codesTable.textContent = 'Failed to fetch codes. Please check source or try again later.';
         });
 }
 
@@ -267,7 +267,7 @@ function deactivateClearCache() {
 
 });
 
-//Working Capybarago simulating userinput (in browser console only, CORs needs testing)
+//Capybarago simulating userinput (in browser console only, cross-reference resource sharing (CORS) needs testing)
 function simulateUserInput() {
   const gameIDField = document.querySelector('input[placeholder="Enter your Game ID here"]');
   const rewardsCodeField = document.querySelector('input[placeholder="Enter Rewards Code here"]');
