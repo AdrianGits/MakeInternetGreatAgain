@@ -1,0 +1,2 @@
+1. Insertion of code into dxc_content.js
+2. Insertion of code into popup.js

@@ -265,9 +265,30 @@ function deactivateClearCache() {
     });
   });
 
+  // Step 2 insertion
+  const fillFieldsButton = document.querySelector('#entdemo-content .option-btn');
+  fillFieldsButton.addEventListener('click', function() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      const activeTab = tabs[0];
+      chrome.tabs.sendMessage(activeTab.id, { action: 'autofillEntDemo' }, function(response) {
+        if (chrome.runtime.lastError) {
+          console.error('Error sending message:', chrome.runtime.lastError);
+        } else {
+          console.log('Response from content script:', response);
+        }
+      });
+    });
+  });
+
+
+
+
+
+  
 });
 
 //Capybarago simulating userinput (in browser console only, cross-reference resource sharing (CORS) needs testing)
+/*
 function simulateUserInput() {
   const gameIDField = document.querySelector('input[placeholder="Enter your Game ID here"]');
   const rewardsCodeField = document.querySelector('input[placeholder="Enter Rewards Code here"]');
@@ -283,6 +304,7 @@ function simulateUserInput() {
 }
 // Execute the function
 simulateUserInput();
+*/
 
 
 
