@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Make the Internet Great Again",
-    "version": "1.0.0",
-    "description": "Description to be changed",
+    "version": "1.0.1",
+    "description": "It's time to make the Internet great again.",
     "permissions": [
         "activeTab",
         "storage",

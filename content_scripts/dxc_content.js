@@ -212,8 +212,57 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             FFBOOL0172_No.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
+        // Function to check all "Tested Annually?" checkboxes
+        function checkTestedAnnuallyCheckboxes() {
+            // Use MutationObserver to handle dynamic content loading
+            const observer = new MutationObserver((mutations, obs) => {
+                const testedAnnuallyCheckboxes = document.querySelectorAll('input[type="checkbox"][table-field-name="TestedAnnually"]');
+
+                if (testedAnnuallyCheckboxes.length > 0) {
+                    obs.disconnect();
+
+                    // Check "Tested Annually?" checkboxes
+                    testedAnnuallyCheckboxes.forEach(checkbox => {
+                        checkbox.checked = true;
+                        checkbox.dispatchEvent(new Event('input', { bubbles: true }));
+                        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                        console.log('Checked a "Tested Annually?" checkbox.');
+                    });
+                }
+            });
+
+            observer.observe(document, {
+                childList: true,
+                subtree: true
+            });
+
+            // Fallback in case the checkboxes are already loaded
+            const testedAnnuallyCheckboxesNow = document.querySelectorAll('input[type="checkbox"][table-field-name="TestedAnnually"]');
+            if (testedAnnuallyCheckboxesNow.length > 0) {
+                observer.disconnect();
+
+                testedAnnuallyCheckboxesNow.forEach(checkbox => {
+                    checkbox.checked = true;
+                    checkbox.dispatchEvent(new Event('input', { bubbles: true }));
+                    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log('Checked a "Tested Annually?" checkbox.');
+                });
+            }
+        }
+
+        // Call the function to check all "Tested Annually?" checkboxes
+        checkTestedAnnuallyCheckboxes();
+
+
+
+
         sendResponse({ status: "Autofill ENT Demo activated" });
     }
+
+
+
+
+
 
 
 
