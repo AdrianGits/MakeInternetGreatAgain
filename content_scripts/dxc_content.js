@@ -253,20 +253,31 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // Call the function to check all "Tested Annually?" checkboxes
         checkTestedAnnuallyCheckboxes();
 
-
-
-
         sendResponse({ status: "Autofill ENT Demo activated" });
     }
 
+    // NEW: Replace field names with backend names
+    if (request.action === "replaceFieldNames") {
+        console.log('Replace field names action received');
+        replaceFieldNamesWithBackendNames();
+        sendResponse({ status: "Field names replaced" });
+    }
 
-
-
-
-
-
-
-
+    // NEW function: Replace the text inside every label’s <span> with its "for" attribute value
+    function replaceFieldNamesWithBackendNames() {
+        // Select every label that has a "for" attribute
+        const labels = document.querySelectorAll('label[for]');
+        labels.forEach(label => {
+            // Get the backend field name from the "for" attribute
+            const backendName = label.getAttribute('for');
+            // Find the <span> element inside the label
+            const span = label.querySelector('span');
+            if (span) {
+                span.textContent = backendName;
+                console.log(`Replaced label text with backend name: ${backendName}`);
+            }
+        });
+    }
 
 });
 

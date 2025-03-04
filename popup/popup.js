@@ -281,6 +281,30 @@ function deactivateClearCache() {
   });
 
 
+  // Get the toggle switch for replacing field names using its ID
+  const toggleReplaceFieldNames = document.getElementById('toggleReplaceFieldNames');
+  
+  if (toggleReplaceFieldNames) {
+      toggleReplaceFieldNames.addEventListener('change', function() {
+          if (toggleReplaceFieldNames.checked) {
+              // When the toggle is set to true, send a message to the content script
+              chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+                  const activeTab = tabs[0];
+                  chrome.tabs.sendMessage(activeTab.id, { action: "replaceFieldNames" }, function(response) {
+                      if (chrome.runtime.lastError) {
+                          console.error('Error sending message:', chrome.runtime.lastError);
+                      } else {
+                          console.log('Response from content script:', response.status);
+                      }
+                  });
+              });
+          } else {
+              // Optionally, add code here to revert field names if needed
+              console.log("Replace field names toggle turned off.");
+          }
+      });
+  }
+
 
 
 
